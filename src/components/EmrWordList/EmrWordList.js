@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { MDBBtn, MDBBadge } from 'mdbreact';
 import Pagination from 'react-js-pagination';
+import WordCloudModal from '../WordCloudModal/WordCloudModal';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getEmrCdmRelationshipRequest,
@@ -41,6 +42,8 @@ const EmrWordList = () => {
     const [itemsCountPerPage, setItemsCountPerPage] = useState(0);
     const [totalItemsCount, setTotalItemsCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
+    const [words, setWords] = useState({});
+    const [wordCloudModalshow, setWordCloudModalShow] = useState(false);
 
     const dispatch = useDispatch();
     const defaultsData = {
@@ -53,9 +56,7 @@ const EmrWordList = () => {
         isLoading,
         error,
     } = useSelector((state) => state.word.emrCdmRelationship);
-    const { pageNumberOfEmrWordList } = useSelector(
-        (state) => state.word
-    );
+    const { pageNumberOfEmrWordList } = useSelector((state) => state.word);
 
     useEffect(() => {
         dispatch(getEmrCdmRelationshipRequest(pageNumberOfEmrWordList));
@@ -66,6 +67,26 @@ const EmrWordList = () => {
         setTotalItemsCount(totalRecordCount);
         setItemsCountPerPage(recordCountPerPage);
     }, [totalRecordCount, recordCountPerPage]);
+
+    const handleWordCloudModalClose = () => setWordCloudModalShow(false);
+    const handleWordCloudModalShow = (synonymList) => {
+        // To generate synonymList.length unique random numbers and store them to an array
+        let arr = [];
+        let count = 0
+        while (count < synonymList.length) {
+            // random number between 1 and 100
+            let randomNumber = Math.floor(Math.random() * 100) + 1;
+            if (arr.indexOf(randomNumber) === -1) {
+                arr.push({
+                    text: synonymList[count].word,
+                    value: randomNumber,
+                });
+                count++;
+            }
+        }
+        setWords(arr);
+        setWordCloudModalShow(true);
+    };
 
     const handlePageChange = (pageNumber) => {
         setActivePage(pageNumber);
@@ -84,11 +105,16 @@ const EmrWordList = () => {
                 <MDBBadge
                     key={i}
                     pill
-                    color='success'
+                    color='transparent'
                     className='p-2 mb-2 mr-2'
+                    style={{
+                        minWidth: '10vw',
+                    }}
                     disabled
                 >
-                    {synonymList[i].word}
+                    <span className='color-primary-dark font-weight-normal'>
+                        {synonymList[i].word}
+                    </span>
                 </MDBBadge>
             );
         }
@@ -101,8 +127,9 @@ const EmrWordList = () => {
                     style={{
                         boxShadow: 'none',
                     }}
+                    onClick={() => handleWordCloudModalShow(synonymList)}
                 >
-                    Show All...
+                    <span className='color-primary-dark'>Show All...</span>
                 </MDBBtn>
             );
         }
@@ -124,7 +151,7 @@ const EmrWordList = () => {
                 >
                     <div className='text-center'>
                         <MDBBtn
-                            color='warning'
+                            color='primary'
                             style={{ width: '15em' }}
                             onClick={() => handleOnClickEmrWord(wordList[i].id)}
                         >
@@ -152,6 +179,7 @@ const EmrWordList = () => {
                     height: '0.1em',
                 }}
             />
+
             {isLoading && <div>Loading...</div>}
             {error && <div className='text-danger'>{error}</div>}
             {!isLoading && !error && wordList && wordList.length === 0 && (
@@ -178,6 +206,11 @@ const EmrWordList = () => {
                         itemClass='page-item'
                         linkClass='page-link'
                         innerClass='pagination pg-blue justify-content-center'
+                    />
+                    <WordCloudModal
+                        words={words}
+                        show={wordCloudModalshow}
+                        onHide={handleWordCloudModalClose}
                     />
                 </>
             )}

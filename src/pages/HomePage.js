@@ -49,7 +49,7 @@ import {
  * @param {Function} useState react useState hook for states: show
  */
 const HomePage = () => {
-    const [show, setShow] = useState(false);
+    const [loadDataModalshow, setLoadDataModalShow] = useState(false);
     const [saveModalShow, setSaveModalShow] = useState(false);
     //this hook allows us to access the dispatch function
     const dispatch = useDispatch();
@@ -114,19 +114,19 @@ const HomePage = () => {
      * @method
      * @memberof HomePage
      */
-    const handleClose = () => setShow(false);
+    const handleLoadDataModalClose = () => setLoadDataModalShow(false);
     /**
      * @method
      * @memberof HomePage
      */
-    const handleShow = () => setShow(true);
+    const handleLoadDataModalShow = () => setLoadDataModalShow(true);
     /**
      * @method
      * @memberof HomePage
      */
     const handleOnDoubleClickLoadDataItem = (docId) => {
         dispatch(getDocDetailsRequest(docId));
-        handleClose();
+        handleLoadDataModalClose();
     };
 
     /**
@@ -135,7 +135,7 @@ const HomePage = () => {
      */
     const handleOnClickLoadButton = () => {
         dispatch(getDocListRequest());
-        handleShow();
+        handleLoadDataModalShow();
     };
 
     return (
@@ -236,8 +236,8 @@ const HomePage = () => {
             </MDBContainer>
 
             <LoadDataModal
-                show={show}
-                onHide={handleClose}
+                show={loadDataModalshow}
+                onHide={handleLoadDataModalClose}
                 handleOnDoubleCLick={handleOnDoubleClickLoadDataItem}
             />
         </>
