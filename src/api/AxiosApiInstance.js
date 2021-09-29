@@ -5,13 +5,14 @@
  */
 
 import axios from 'axios';
+import { AXIOS_TIME_OUT } from "../constants";
 
-const axiosApiInstance = axios.create({
-    baseURL: '',
-    timeout: 1000,
+const AxiosApiInstance = axios.create({
+    timeout: AXIOS_TIME_OUT,
 });
+
 // Response interceptor for API calls
-axiosApiInstance.interceptors.response.use(
+AxiosApiInstance.interceptors.response.use(
     (response) => {
         const data = response.data;
         // if fail
@@ -43,4 +44,29 @@ axiosApiInstance.interceptors.response.use(
     }
 );
 
-export default axiosApiInstance;
+/* ---------------------------- Init Base Api Url --------------------------- */
+export const initBaseUrl = (baseApiUrl) => {
+    // Setting base api url to AxiosApiInstance
+    AxiosApiInstance.interceptors.request.use((config) => {
+      config.baseURL = baseApiUrl;
+      return config;
+    });
+  };
+
+
+/* --------------------------------- Logging -------------------------------- */
+if (process.env && process.env.NODE_ENV !== "production") {
+    // logging request interceptor
+    AxiosApiInstance.interceptors.request.use((request) => {
+      console.log("Starting Request", JSON.stringify(request, null, 2));
+      return request;
+    });
+  
+    // logging response interceptor
+    AxiosApiInstance.interceptors.response.use((response) => {
+      console.log("Response:", JSON.stringify(response, null, 2));
+      return response;
+    });
+  }
+
+export default AxiosApiInstance;

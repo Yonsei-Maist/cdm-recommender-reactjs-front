@@ -26,13 +26,11 @@ import {
     setSaveDocError,
 } from '../actions/docAction';
 import {setContent} from '../actions/contentAction';
-import DocService from '../api/docService';
+import DocService from '../api/DocService';
 
 /* -------------------------------------------------------------------------- */
 /*                                  Doc List                                  */
 /* -------------------------------------------------------------------------- */
-
-const getDefaultSetting = (state) => state.config;
 
 /**
  * @generator
@@ -46,10 +44,9 @@ const getDefaultSetting = (state) => state.config;
  */
 function* handleGetDocList() {
     try {
-        let url = (yield select(getDefaultSetting)).get('defaultSetting').APIServer;
         //TODO: replace userId with userId login from redux state
         const userId = 'doctor1';
-        const docList = yield call(DocService.getDocList, url, userId);
+        const docList = yield call(DocService.getDocList, userId);
         yield put(getDocListSuccess(docList));
     } catch (error) {
         yield put(getDocListError({ error: error.toString() }));
@@ -83,8 +80,7 @@ const watchGetDocList = function* () {
  */
 function* handleGetDocDetails(action) {
     try {
-        let url = (yield select(getDefaultSetting)).get('defaultSetting').APIServer;
-        const docDetails = yield call(DocService.getDocDetails, url, action.payload);
+        const docDetails = yield call(DocService.getDocDetails, action.payload);
         yield put(getDocDetailsSuccess(docDetails));
         yield put(setContent(docDetails.data.content));
     } catch (error) {
@@ -120,8 +116,7 @@ const watchGetDocDetails = function* () {
  */
 function* handleSaveDoc(action) {
     try {
-        let url = (yield select(getDefaultSetting)).get('defaultSetting').APIServer;
-        const saveDoc = yield call(DocService.saveDoc, url, action.payload);
+        const saveDoc = yield call(DocService.saveDoc, action.payload);
         yield put(setSaveDocSuccess(saveDoc));
     } catch (error) {
         yield put(setSaveDocError({ error: error.toString() }));

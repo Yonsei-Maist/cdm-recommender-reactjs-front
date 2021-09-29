@@ -14,7 +14,7 @@
 
 import { put, call, takeLatest } from 'redux-saga/effects';
 import { USER_DATA } from '../action-types';
-import { fetchUserData } from '../api';
+import UserService from '../api/UserService';
 import {
     setLoadUserDataSuccess,
     setLoadUserDataError,
@@ -32,7 +32,7 @@ import {
  */
 function* handleLoardUserData() {
     try {
-        const loadData = yield call(fetchUserData);
+        const loadData = yield call(UserService.fetchUserData);
         yield put(setLoadUserDataSuccess(loadData));
     } catch (error) {
         yield put(setLoadUserDataError(error.toString()));

@@ -22,7 +22,7 @@ import {
     getEmrCdmRelationshipSuccess,
     getEmrCdmRelationshipError,
 } from '../actions/wordAction';
-import WordService from '../api/wordService';
+import WordService from '../api/WordService';
 
 /* -------------------------------------------------------------------------- */
 /*                    Get similar words List                                  */
@@ -42,12 +42,11 @@ const getDefaultSetting = (state) => state.config;
  */
 function* handleGetSimilarWords(action) {
     try {
-        let url = (yield select(getDefaultSetting)).get('defaultSetting').APIServer;
         let data = {};
         // if action.payload is object -> markedWord object, else action.payload is string emrWordId
         if (typeof action.payload === 'object' && action.payload !== null) {
             const markedWord = action.payload;
-            const similarWords = yield call(WordService.getSimilarWords, url, markedWord.emrWordId);
+            const similarWords = yield call(WordService.getSimilarWords, markedWord.emrWordId);
             data = {
                 emrWordId: similarWords.data.emrWordId,
                 cdmWordsList: similarWords.data.cdmWordsList,
@@ -55,7 +54,7 @@ function* handleGetSimilarWords(action) {
             };
         } else {
             const emrWordId = action.payload;
-            const similarWords = yield call(WordService.getSimilarWords, url, emrWordId);
+            const similarWords = yield call(WordService.getSimilarWords, emrWordId);
             data = {
                 emrWordId: similarWords.data.emrWordId,
                 cdmWordsList: similarWords.data.cdmWordsList,
@@ -94,9 +93,8 @@ const watchGetSimilarWords = function* () {
  */
 function* handleGetEmrCdmRelationship(action) {
     try {
-        let url = (yield select(getDefaultSetting)).get('defaultSetting').APIServer;
         // action.payload -> currentPageNo
-        const emrCdmRelationship = yield call(WordService.getEmrCdmRelationship, url, action.payload);
+        const emrCdmRelationship = yield call(WordService.getEmrCdmRelationship, action.payload);
         yield put(getEmrCdmRelationshipSuccess(emrCdmRelationship.data));
     } catch (error) {
         yield put(getEmrCdmRelationshipError({ error: error.toString() }));

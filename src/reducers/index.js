@@ -23,7 +23,7 @@ import docReducer from './docReducer';
 import wordReducer from './wordReducer';
 import errorReducer from './errorReducer';
 import contentReducer from './contentReducer';
-import config from './config';
+import configReducer from './configReducer';
 
 /**
  * @type {Object}
@@ -36,7 +36,7 @@ const rootReducer = combineReducers({
     word: wordReducer,
     error: errorReducer,
     content: contentReducer,
-    config: config,
+    config: configReducer,
 });
 
 export default rootReducer;

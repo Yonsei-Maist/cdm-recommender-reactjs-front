@@ -13,44 +13,50 @@
  * @constant
  * @type {string=} http
  */
-const SCHEME = 'http';
+const SCHEME = "http";
 
 /**
  * @constant
  * @type {string=} localhost
  */
-const HOST = 'localhost';
+const HOST = "maist.yonsei.ac.kr";
 
 /**
  * @constant
  * @type {string=} 8080
  */
-const PORT = '8080';
+const PORT = "8899";
 
 /**
  * @constant
  * @type {string=} ${SCHEME}://${HOST}:${PORT}
  */
-export const API_BASE_ADDRESS =
-  process.env.REACT_APP_DOCKER_COMPOSE === 'true'
-    ? 'http://localhost:3050/api'
+export const API_URL_BASE =
+  process.env.REACT_APP_DOCKER_COMPOSE === "true"
+    ? "http://localhost:3050/api"
     : `${SCHEME}://${HOST}:${PORT}/`;
 
+export const AXIOS_TIME_OUT = 1000; //default is `0` (no timeout)
+
+/* ------------------------------ UsersService ------------------------------ */
 /**
  * @constant
  * @type {string=} ${API_BASE_ADDRESS}/user-data
  */
-export const API_URL_USER_DATA = `${API_BASE_ADDRESS}/user-data`;
+export const API_URL_USER_DATA = "user-data";
 
-/**
- * @constant
- * @type {string=} ${API_BASE_ADDRESS}/cdm-words-
- */
-export const API_URL_CDM_WORDS = `${API_BASE_ADDRESS}/cdm-words-`;
+/* ------------------------------- DocService ------------------------------- */
+export const API_URL_GET_DOC_LIST = "emr/doc/list";
+export const API_URL_GET_DOC_DETAILS = "emr/doc/page";
+export const API_URL_SAVE_DOC = "emr/doc";
 
+/* ------------------------------- WordService ------------------------------ */
+export const API_URL_GET_SEARCH_WORD = "cdm/words";
+export const API_URL_GET_SIMILAR_WORDS = "cdm/similarity/words";
+export const API_URL_GET_EMR_CDM_RELATIONSHIP = "cdm/words/list";
 
 /**
  * @constant
  * @type {string=} handleOnClickMarkedWord
  */
-export const METHOD_NAME_ONCLICK_MARKED_WORD = 'handleOnClickMarkedWord';
+export const METHOD_NAME_ONCLICK_MARKED_WORD = "handleOnClickMarkedWord";

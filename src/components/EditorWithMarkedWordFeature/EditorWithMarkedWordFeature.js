@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import { MarkedWord } from '../../formats/markedWord';
-import WordService from '../../api/wordService';
+import WordService from '../../api/WordService';
 import { useDispatch, useSelector } from 'react-redux';
 import { setContent } from '../../actions/contentAction';
 import _ from 'lodash';
@@ -39,9 +39,6 @@ const EditorWithMarkedWordFeature = () => {
     const changeEmrWord = useSelector((state) => state.word.changeEmrWord);
     const resetChangeEmrWord = useSelector(
         (state) => state.word.resetChangeEmrWord
-    );
-    const { APIServer } = useSelector((state) => state.config).get(
-        'defaultSetting'
     );
 
     // change EMR word to CDM word
@@ -275,7 +272,6 @@ const EditorWithMarkedWordFeature = () => {
                     // check similarity of each word
                     try {
                         searchWord = await WordService.getSearchWord(
-                            APIServer,
                             lookupWord,
                             GET_SIMILAR_WORDS_TIMEOUT_WHEN_LOAD_OR_PAST_CONTENT
                         );
@@ -321,7 +317,6 @@ const EditorWithMarkedWordFeature = () => {
                     // check similarity of each word again and update the content
                     try {
                         const searchWord = await WordService.getSearchWord(
-                            APIServer,
                             lookupWord,
                             isPastText
                                 ? GET_SIMILAR_WORDS_TIMEOUT_WHEN_LOAD_OR_PAST_CONTENT
