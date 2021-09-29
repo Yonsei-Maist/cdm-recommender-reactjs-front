@@ -9,8 +9,8 @@
  * @module actions/errorAction
  * @requires ../action-types/errorType
  */
-import { createAction } from 'redux-actions';
-import ERROR from '../action-types/errorType';
+import { createAction } from "redux-actions";
+import ERROR from "../action-types/errorType";
 
 // Doc List
 const setError = createAction(ERROR.SET_ERROR);

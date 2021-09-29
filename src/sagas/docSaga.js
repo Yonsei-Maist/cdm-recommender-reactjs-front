@@ -15,18 +15,18 @@
  * @requires '../api/docService'
  */
 
-import { put, call, takeLatest, select } from 'redux-saga/effects';
-import DOC from '../action-types/docType';
+import { put, call, takeLatest, select } from "redux-saga/effects";
+import DOC from "../action-types/docType";
 import {
-    getDocListSuccess,
-    getDocListError,
-    getDocDetailsSuccess,
-    getDocDetailsError,
-    setSaveDocSuccess,
-    setSaveDocError,
-} from '../actions/docAction';
-import {setContent} from '../actions/contentAction';
-import DocService from '../api/DocService';
+  getDocListSuccess,
+  getDocListError,
+  getDocDetailsSuccess,
+  getDocDetailsError,
+  setSaveDocSuccess,
+  setSaveDocError,
+} from "../actions/docAction";
+import { setContent } from "../actions/contentAction";
+import DocService from "../api/DocService";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Doc List                                  */
@@ -43,14 +43,14 @@ import DocService from '../api/DocService';
  * @yields {Object} PutEffect of getDocListError action
  */
 function* handleGetDocList() {
-    try {
-        //TODO: replace userId with userId login from redux state
-        const userId = 'doctor1';
-        const docList = yield call(DocService.getDocList, userId);
-        yield put(getDocListSuccess(docList));
-    } catch (error) {
-        yield put(getDocListError({ error: error.toString() }));
-    }
+  try {
+    //TODO: replace userId with userId login from redux state
+    const userId = "doctor1";
+    const docList = yield call(DocService.getDocList, userId);
+    yield put(getDocListSuccess(docList));
+  } catch (error) {
+    yield put(getDocListError({ error: error.toString() }));
+  }
 }
 
 /**
@@ -61,8 +61,8 @@ function* handleGetDocList() {
  * @yields {Object} ForkEffect of handleGetDocList saga
  */
 const watchGetDocList = function* () {
-    // Does not allow concurrent fetches of data
-    yield takeLatest(DOC.GET_DOC_LIST_REQUEST, handleGetDocList);
+  // Does not allow concurrent fetches of data
+  yield takeLatest(DOC.GET_DOC_LIST_REQUEST, handleGetDocList);
 };
 
 /* -------------------------------------------------------------------------- */
@@ -79,13 +79,13 @@ const watchGetDocList = function* () {
  * @yields {Object} PutEffect of getDocDetailsError action
  */
 function* handleGetDocDetails(action) {
-    try {
-        const docDetails = yield call(DocService.getDocDetails, action.payload);
-        yield put(getDocDetailsSuccess(docDetails));
-        yield put(setContent(docDetails.data.content));
-    } catch (error) {
-        yield put(getDocDetailsError({ error: error.toString() }));
-    }
+  try {
+    const docDetails = yield call(DocService.getDocDetails, action.payload);
+    yield put(getDocDetailsSuccess(docDetails));
+    yield put(setContent(docDetails.data.content));
+  } catch (error) {
+    yield put(getDocDetailsError({ error: error.toString() }));
+  }
 }
 
 /**
@@ -96,10 +96,9 @@ function* handleGetDocDetails(action) {
  * @yields {Object} ForkEffect of handleGetDocDetails saga
  */
 const watchGetDocDetails = function* () {
-    // Does not allow concurrent fetches of data
-    yield takeLatest(DOC.GET_DOC_DETAILS_REQUEST, handleGetDocDetails);
+  // Does not allow concurrent fetches of data
+  yield takeLatest(DOC.GET_DOC_DETAILS_REQUEST, handleGetDocDetails);
 };
-
 
 /* -------------------------------------------------------------------------- */
 /*                                  Save Doc                                  */
@@ -115,12 +114,12 @@ const watchGetDocDetails = function* () {
  * @yields {Object} PutEffect of saveDocError action
  */
 function* handleSaveDoc(action) {
-    try {
-        const saveDoc = yield call(DocService.saveDoc, action.payload);
-        yield put(setSaveDocSuccess(saveDoc));
-    } catch (error) {
-        yield put(setSaveDocError({ error: error.toString() }));
-    }
+  try {
+    const saveDoc = yield call(DocService.saveDoc, action.payload);
+    yield put(setSaveDocSuccess(saveDoc));
+  } catch (error) {
+    yield put(setSaveDocError({ error: error.toString() }));
+  }
 }
 
 /**
@@ -131,8 +130,8 @@ function* handleSaveDoc(action) {
  * @yields {Object} ForkEffect of handleSaveDoc saga
  */
 const watchSaveDoc = function* () {
-    // Does not allow concurrent fetches of data
-    yield takeLatest(DOC.SAVE_DOC_REQUEST, handleSaveDoc);
+  // Does not allow concurrent fetches of data
+  yield takeLatest(DOC.SAVE_DOC_REQUEST, handleSaveDoc);
 };
 
 export { watchGetDocList, watchGetDocDetails, watchSaveDoc };

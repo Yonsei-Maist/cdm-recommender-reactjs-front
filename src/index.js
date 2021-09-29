@@ -18,13 +18,13 @@
  * @requires './index.css'
  * @requires 'bootstrap/dist/css/bootstrap.min.css'
  */
-import * as serviceWorker from './serviceWorker';
-import 'core-js/es6/map'; // for lower version of browser
-import 'core-js/es6/set';
-import MainApp from './MainApp';
-import './index.css';
+import * as serviceWorker from "./serviceWorker";
+import "core-js/es6/map"; // for lower version of browser
+import "core-js/es6/set";
+import MainApp from "./MainApp";
+import "./index.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/mdb-free.scss";
 
 // If you want your app to work offline and load faster, you can change
@@ -32,6 +32,4 @@ import "./assets/scss/mdb-free.scss";
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
-export {
-	MainApp
-}
+export { MainApp };

@@ -16,7 +16,7 @@
  * }
  */
 const CONTENT = {
-    SET_CONTENT: 'SET_CONTENT',
+  SET_CONTENT: "SET_CONTENT",
 };
 
 export default CONTENT;

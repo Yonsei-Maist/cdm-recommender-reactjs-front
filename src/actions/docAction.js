@@ -9,8 +9,8 @@
  * @module actions/docAction
  * @requires ../action-types/docType
  */
-import { createAction } from 'redux-actions';
-import DOC from '../action-types/docType';
+import { createAction } from "redux-actions";
+import DOC from "../action-types/docType";
 
 // Doc List
 const getDocListRequest = createAction(DOC.GET_DOC_LIST_REQUEST);
@@ -26,13 +26,13 @@ const setSaveDocSuccess = createAction(DOC.SAVE_DOC_SUCCESS);
 const setSaveDocError = createAction(DOC.SAVE_DOC_ERROR);
 
 export {
-    getDocListRequest,
-    getDocListSuccess,
-    getDocListError,
-    getDocDetailsRequest,
-    getDocDetailsSuccess,
-    getDocDetailsError,
-    setSaveDocRequest,
-    setSaveDocSuccess,
-    setSaveDocError,
+  getDocListRequest,
+  getDocListSuccess,
+  getDocListError,
+  getDocDetailsRequest,
+  getDocDetailsSuccess,
+  getDocDetailsError,
+  setSaveDocRequest,
+  setSaveDocSuccess,
+  setSaveDocError,
 };

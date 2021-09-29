@@ -9,7 +9,7 @@
  * @module actions/userDataAction
  * @requires ../action-types
  */
-import { USER_DATA } from '../action-types';
+import { USER_DATA } from "../action-types";
 
 /**
  * @method
@@ -18,7 +18,7 @@ import { USER_DATA } from '../action-types';
  * @returns {object} {type: USER_DATA.LOAD_USER_DATA_LOADING}
  */
 const loadUserData = () => ({
-    type: USER_DATA.LOAD_USER_DATA_LOADING,
+  type: USER_DATA.LOAD_USER_DATA_LOADING,
 });
 
 /**
@@ -28,8 +28,8 @@ const loadUserData = () => ({
  * @returns {object} {type: USER_DATA.LOAD_USER_DATA_SUCCESS, data}
  */
 const setLoadUserDataSuccess = (data) => ({
-    type: USER_DATA.LOAD_USER_DATA_SUCCESS,
-    data,
+  type: USER_DATA.LOAD_USER_DATA_SUCCESS,
+  data,
 });
 
 /**
@@ -39,12 +39,8 @@ const setLoadUserDataSuccess = (data) => ({
  * @returns {Object} {type: USER_DATA.LOAD_USER_DATA_ERROR, error}
  */
 const setLoadUserDataError = (error) => ({
-    type: USER_DATA.LOAD_USER_DATA_ERROR,
-    error,
+  type: USER_DATA.LOAD_USER_DATA_ERROR,
+  error,
 });
 
-export {
-    loadUserData,
-    setLoadUserDataSuccess,
-    setLoadUserDataError,
-};
+export { loadUserData, setLoadUserDataSuccess, setLoadUserDataError };

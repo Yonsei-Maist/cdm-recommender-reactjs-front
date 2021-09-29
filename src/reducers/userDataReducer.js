@@ -9,7 +9,7 @@
  * @module reducers/userDataReducer
  * @requires '../action-types'
  */
-import { USER_DATA } from '../action-types';
+import { USER_DATA } from "../action-types";
 
 /**
  * @type {Object}
@@ -21,10 +21,10 @@ import { USER_DATA } from '../action-types';
  * }
  */
 const initialState = {
-    data: [],
-    isLoading: false,
-    error: '',
-    inputText: '',
+  data: [],
+  isLoading: false,
+  error: "",
+  inputText: "",
 };
 
 /**
@@ -34,32 +34,32 @@ const initialState = {
  * @param {Object} action redux action related to USER_DATA from '../action-types'
  */
 const userDataReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case USER_DATA.LOAD_USER_DATA_LOADING: {
-            return {
-                ...state,
-                isLoading: true,
-                error: '',
-            };
-        }
-        case USER_DATA.LOAD_USER_DATA_SUCCESS: {
-            return {
-                ...state,
-                data: action.data,
-                isLoading: false,
-            };
-        }
-        case USER_DATA.LOAD_USER_DATA_ERROR: {
-            return {
-                ...state,
-                isLoading: false,
-                error: action.error,
-            };
-        }
-        default: {
-            return state;
-        }
+  switch (action.type) {
+    case USER_DATA.LOAD_USER_DATA_LOADING: {
+      return {
+        ...state,
+        isLoading: true,
+        error: "",
+      };
     }
+    case USER_DATA.LOAD_USER_DATA_SUCCESS: {
+      return {
+        ...state,
+        data: action.data,
+        isLoading: false,
+      };
+    }
+    case USER_DATA.LOAD_USER_DATA_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.error,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
 };
 
 export default userDataReducer;

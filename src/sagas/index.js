@@ -13,11 +13,11 @@
  * @requires './docSaga'
  */
 
-import { all } from 'redux-saga/effects';
+import { all } from "redux-saga/effects";
 
-import userDataSaga from './userDataSaga';
-import * as docSaga from './docSaga';
-import * as wordSaga from './wordSaga';
+import userDataSaga from "./userDataSaga";
+import * as docSaga from "./docSaga";
+import * as wordSaga from "./wordSaga";
 
 /**
  * @generator
@@ -27,12 +27,12 @@ import * as wordSaga from './wordSaga';
  * @yields {Object} AllEffect of sagas
  */
 export default function* rootSaga() {
-    yield all([
-        userDataSaga(),
-        docSaga.watchGetDocList(),
-        docSaga.watchGetDocDetails(),
-        docSaga.watchSaveDoc(),
-        wordSaga.watchGetSimilarWords(),
-        wordSaga.watchGetEmrCdmRelationship(),
-    ]);
+  yield all([
+    userDataSaga(),
+    docSaga.watchGetDocList(),
+    docSaga.watchGetDocDetails(),
+    docSaga.watchSaveDoc(),
+    wordSaga.watchGetSimilarWords(),
+    wordSaga.watchGetEmrCdmRelationship(),
+  ]);
 }

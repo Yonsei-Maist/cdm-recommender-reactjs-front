@@ -14,15 +14,15 @@
  * @requires '../actions/wordAction'
  */
 
-import { put, call, takeLatest, select } from 'redux-saga/effects';
-import WORD from '../action-types/wordType';
+import { put, call, takeLatest, select } from "redux-saga/effects";
+import WORD from "../action-types/wordType";
 import {
-    getSimilarWordsSuccess,
-    getSimilarWordsError,
-    getEmrCdmRelationshipSuccess,
-    getEmrCdmRelationshipError,
-} from '../actions/wordAction';
-import WordService from '../api/WordService';
+  getSimilarWordsSuccess,
+  getSimilarWordsError,
+  getEmrCdmRelationshipSuccess,
+  getEmrCdmRelationshipError,
+} from "../actions/wordAction";
+import WordService from "../api/WordService";
 
 /* -------------------------------------------------------------------------- */
 /*                    Get similar words List                                  */
@@ -41,29 +41,32 @@ const getDefaultSetting = (state) => state.config;
  * @yields {Object} PutEffect of getSimilarWordsError action
  */
 function* handleGetSimilarWords(action) {
-    try {
-        let data = {};
-        // if action.payload is object -> markedWord object, else action.payload is string emrWordId
-        if (typeof action.payload === 'object' && action.payload !== null) {
-            const markedWord = action.payload;
-            const similarWords = yield call(WordService.getSimilarWords, markedWord.emrWordId);
-            data = {
-                emrWordId: similarWords.data.emrWordId,
-                cdmWordsList: similarWords.data.cdmWordsList,
-                markedWord,
-            };
-        } else {
-            const emrWordId = action.payload;
-            const similarWords = yield call(WordService.getSimilarWords, emrWordId);
-            data = {
-                emrWordId: similarWords.data.emrWordId,
-                cdmWordsList: similarWords.data.cdmWordsList,
-            };
-        }
-        yield put(getSimilarWordsSuccess(data));
-    } catch (error) {
-        yield put(getSimilarWordsError({ error: error.toString() }));
+  try {
+    let data = {};
+    // if action.payload is object -> markedWord object, else action.payload is string emrWordId
+    if (typeof action.payload === "object" && action.payload !== null) {
+      const markedWord = action.payload;
+      const similarWords = yield call(
+        WordService.getSimilarWords,
+        markedWord.emrWordId
+      );
+      data = {
+        emrWordId: similarWords.data.emrWordId,
+        cdmWordsList: similarWords.data.cdmWordsList,
+        markedWord,
+      };
+    } else {
+      const emrWordId = action.payload;
+      const similarWords = yield call(WordService.getSimilarWords, emrWordId);
+      data = {
+        emrWordId: similarWords.data.emrWordId,
+        cdmWordsList: similarWords.data.cdmWordsList,
+      };
     }
+    yield put(getSimilarWordsSuccess(data));
+  } catch (error) {
+    yield put(getSimilarWordsError({ error: error.toString() }));
+  }
 }
 
 /**
@@ -74,8 +77,8 @@ function* handleGetSimilarWords(action) {
  * @yields {Object} ForkEffect of handleGetSimilarWords saga
  */
 const watchGetSimilarWords = function* () {
-    // Does not allow concurrent fetches of data
-    yield takeLatest(WORD.GET_SIMILAR_WORDS_REQUEST, handleGetSimilarWords);
+  // Does not allow concurrent fetches of data
+  yield takeLatest(WORD.GET_SIMILAR_WORDS_REQUEST, handleGetSimilarWords);
 };
 
 /* -------------------------------------------------------------------------- */
@@ -92,13 +95,16 @@ const watchGetSimilarWords = function* () {
  * @yields {Object} PutEffect of getEmrCdmRelationshipError action
  */
 function* handleGetEmrCdmRelationship(action) {
-    try {
-        // action.payload -> currentPageNo
-        const emrCdmRelationship = yield call(WordService.getEmrCdmRelationship, action.payload);
-        yield put(getEmrCdmRelationshipSuccess(emrCdmRelationship.data));
-    } catch (error) {
-        yield put(getEmrCdmRelationshipError({ error: error.toString() }));
-    }
+  try {
+    // action.payload -> currentPageNo
+    const emrCdmRelationship = yield call(
+      WordService.getEmrCdmRelationship,
+      action.payload
+    );
+    yield put(getEmrCdmRelationshipSuccess(emrCdmRelationship.data));
+  } catch (error) {
+    yield put(getEmrCdmRelationshipError({ error: error.toString() }));
+  }
 }
 
 /**
@@ -109,9 +115,11 @@ function* handleGetEmrCdmRelationship(action) {
  * @yields {Object} ForkEffect of handleGetEmrCdmRelationship saga
  */
 const watchGetEmrCdmRelationship = function* () {
-    // Does not allow concurrent fetches of data
-    yield takeLatest(WORD.GET_EMR_CDM_RELATIONSHIP_REQUEST, handleGetEmrCdmRelationship);
+  // Does not allow concurrent fetches of data
+  yield takeLatest(
+    WORD.GET_EMR_CDM_RELATIONSHIP_REQUEST,
+    handleGetEmrCdmRelationship
+  );
 };
-
 
 export { watchGetSimilarWords, watchGetEmrCdmRelationship };

@@ -16,14 +16,14 @@
  * @requires './errorReducer'
  * @requires './contentReducer'
  */
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import userDataReducer from './userDataReducer';
-import docReducer from './docReducer';
-import wordReducer from './wordReducer';
-import errorReducer from './errorReducer';
-import contentReducer from './contentReducer';
-import configReducer from './configReducer';
+import userDataReducer from "./userDataReducer";
+import docReducer from "./docReducer";
+import wordReducer from "./wordReducer";
+import errorReducer from "./errorReducer";
+import contentReducer from "./contentReducer";
+import configReducer from "./configReducer";
 
 /**
  * @type {Object}
@@ -31,12 +31,12 @@ import configReducer from './configReducer';
  * @property {Object} doc
  */
 const rootReducer = combineReducers({
-    userData: userDataReducer,
-    doc: docReducer,
-    word: wordReducer,
-    error: errorReducer,
-    content: contentReducer,
-    config: configReducer,
+  userData: userDataReducer,
+  doc: docReducer,
+  word: wordReducer,
+  error: errorReducer,
+  content: contentReducer,
+  config: configReducer,
 });
 
 export default rootReducer;
