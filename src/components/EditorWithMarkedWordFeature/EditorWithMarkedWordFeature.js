@@ -10,6 +10,8 @@ import WordService from "../../api/WordService";
 import { useDispatch, useSelector } from "react-redux";
 import { setContent } from "../../actions/contentAction";
 import _ from "lodash";
+import { ClassNames } from "@emotion/react";
+import EnabledWordAddModeNotification from "../EnabledWordAddModeNotification/EnabledWordAddModeNotification";
 
 import "quill/dist/quill.core.css";
 import {
@@ -26,8 +28,12 @@ Quill.register(
 
 const Delta = Quill.import("delta");
 
-const EditorWithMarkedWordFeature = () => {
+const EditorWithMarkedWordFeature = ({
+  onSelectedWord,
+  onToggleWordAddMode,
+}) => {
   const GET_SIMILAR_WORDS_TIMEOUT_WHEN_LOAD_OR_PAST_CONTENT = 0; // default is `0` (no timeout)
+  const [isEnableWordAddMode, setIsEnableWordAddMode] = useState(false);
   const [editorHtml, setEditorHtml] = useState("");
   // Quill instance
   const [quillRef, setQuillRef] = useState(null);
@@ -168,8 +174,9 @@ const EditorWithMarkedWordFeature = () => {
     if (
       reactQuillRef == null ||
       (reactQuillRef != null && typeof reactQuillRef.getEditor !== "function")
-    )
+    ) {
       return;
+    }
     setQuillRef(reactQuillRef.getEditor());
   }, [reactQuillRef]);
 
@@ -429,21 +436,83 @@ const EditorWithMarkedWordFeature = () => {
     }
   };
 
+  const handleOnChangeSelection = (range, source, editor) => {
+    if (source === Quill.sources.USER && range != null && range.length !== 0) {
+      const text = editor.getText();
+      const cursorStartIndex = range.index;
+      const cursorEndIndex = range.index + range.length;
+      let selectedWord = text
+        .substring(cursorStartIndex, cursorEndIndex)
+        .trim();
+      if (selectedWord) {
+        console.log(">>>>>>>> selectedWord");
+        console.log(selectedWord);
+        onSelectedWord(selectedWord);
+      }
+    }
+  };
+
+  /* ----------------------------- Custom Toolbar ----------------------------- */
+  const handleSwitchChange = () => {
+    setIsEnableWordAddMode(!isEnableWordAddMode);
+    onToggleWordAddMode(!isEnableWordAddMode);
+  };
+
+  const CustomToolbar = () => (
+    <div id="toolbar">
+      <div className="custom-control custom-switch">
+        <input
+          type="checkbox"
+          className="custom-control-input"
+          id="customSwitchesChecked"
+          checked={isEnableWordAddMode}
+          onChange={handleSwitchChange}
+        />
+        <label className="custom-control-label" htmlFor="customSwitchesChecked">
+          Word Add Mode
+        </label>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex-grow-1">
-      <ReactQuill
-        ref={(el) => {
-          setReactQuillRef(el);
-        }}
-        value={editorHtml}
-        onChange={handleOnChange}
-        theme={null}
-      />
+      <CustomToolbar />
+      <ClassNames>
+        {({ css, cx }) => (
+          <ReactQuill
+            ref={(el) => {
+              setReactQuillRef(el);
+            }}
+            className={cx(
+              {
+                [css`
+                  & p::selection {
+                    background: none;
+                    user-selection: none;
+                  }
+                `]: !isEnableWordAddMode,
+              },
+              css`
+                .ql-container {
+                  font-size: 16px;
+                }
+              `
+            )}
+            value={editorHtml}
+            onChange={handleOnChange}
+            onChangeSelection={
+              isEnableWordAddMode ? handleOnChangeSelection : undefined
+            }
+            onBlur={undefined}
+            theme={null}
+          />
+        )}
+      </ClassNames>
+      {isEnableWordAddMode && <EnabledWordAddModeNotification />}
     </div>
   );
 };
-
-EditorWithMarkedWordFeature.propTypes = {};
 
 export default EditorWithMarkedWordFeature;
 

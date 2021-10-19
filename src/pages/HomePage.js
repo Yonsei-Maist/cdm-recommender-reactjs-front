@@ -25,6 +25,7 @@ import {
   getDocDetailsRequest,
   setSaveDocRequest,
 } from "../actions/docAction";
+import EmrWordAddForm from "../components/EmrWordAddForm/EmrWordAddForm";
 
 /**
  * Renders HomePagelication Component
@@ -51,6 +52,8 @@ import {
 const HomePage = () => {
   const [loadDataModalshow, setLoadDataModalShow] = useState(false);
   const [saveModalShow, setSaveModalShow] = useState(false);
+  const [isShowEmrWordAddForm, setIsShowEmrWordAddForm] = useState(false);
+  const [selectedEmrWordToAdd, setSelectedEmrWordToAdd] = useState("");
   //this hook allows us to access the dispatch function
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
@@ -138,6 +141,13 @@ const HomePage = () => {
     handleLoadDataModalShow();
   };
 
+  const handleOnSelectedWord = (selectedWord) => {
+    setSelectedEmrWordToAdd(selectedWord);
+  };
+  const handleOnToggleWordAddMode = (isEnableWordAddMode) => {
+    setIsShowEmrWordAddForm(isEnableWordAddMode);
+  };
+
   return (
     <>
       <MDBContainer className="my-4 d-flex flex-column px-0">
@@ -204,14 +214,20 @@ const HomePage = () => {
                 maxWidth: "fit-content",
               }}
             >
-              <EditorWithMarkedWordFeature />
+              <EditorWithMarkedWordFeature
+                onSelectedWord={handleOnSelectedWord}
+                onToggleWordAddMode={handleOnToggleWordAddMode}
+              />
             </div>
           </div>
           <MDBCard
             className="flex-grow-1 flex-md-grow-0 ml-md-2 mt-3 mt-lg-0 px-3"
             style={{ minHeight: "30vh", minWidth: "25vw" }}
           >
-            <CdmWordList />
+            {!isShowEmrWordAddForm && <CdmWordList />}
+            {isShowEmrWordAddForm && (
+              <EmrWordAddForm selectedEmrWord={selectedEmrWordToAdd} />
+            )}
           </MDBCard>
         </div>
       </MDBContainer>

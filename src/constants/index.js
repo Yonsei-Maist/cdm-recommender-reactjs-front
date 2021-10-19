@@ -36,7 +36,7 @@ export const API_URL_BASE =
     ? "http://localhost:3050/api"
     : `${SCHEME}://${HOST}:${PORT}/`;
 
-export const AXIOS_TIME_OUT = 1000; //default is `0` (no timeout)
+export const AXIOS_TIME_OUT = 0; //default is `0` (no timeout)
 
 /* ------------------------------ UsersService ------------------------------ */
 /**
