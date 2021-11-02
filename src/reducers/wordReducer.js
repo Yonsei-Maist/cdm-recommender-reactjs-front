@@ -28,6 +28,7 @@ const defaultState = {
   resetChangeEmrWord: {},
   emrCdmRelationship: {},
   pageNumberOfEmrWordList: 1,
+  isEnableWordAddMode: false,
 };
 
 const wordReducer = handleActions(
@@ -95,6 +96,11 @@ const wordReducer = handleActions(
     [WORD.SET_PAGE_NUMBER_OF_EMR_WORD_LIST]: (state, action) => ({
       ...state,
       pageNumberOfEmrWordList: action.payload,
+    }),
+    // Set isEnableWordAddMode
+    [WORD.SET_IS_ENABLE_WORD_ADD_MODE]: (state, action) => ({
+      ...state,
+      isEnableWordAddMode: action.payload,
     }),
   },
   defaultState

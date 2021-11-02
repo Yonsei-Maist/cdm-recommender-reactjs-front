@@ -52,12 +52,12 @@ import EmrWordAddForm from "../components/EmrWordAddForm/EmrWordAddForm";
 const HomePage = () => {
   const [loadDataModalshow, setLoadDataModalShow] = useState(false);
   const [saveModalShow, setSaveModalShow] = useState(false);
-  const [isShowEmrWordAddForm, setIsShowEmrWordAddForm] = useState(false);
   const [selectedEmrWordToAdd, setSelectedEmrWordToAdd] = useState("");
   //this hook allows us to access the dispatch function
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
   const saveDoc = useSelector((state) => state.doc.saveDoc);
+  const { isEnableWordAddMode } = useSelector((state) => state.word);
 
   useEffect(() => {
     if (saveDoc.error) {
@@ -144,9 +144,6 @@ const HomePage = () => {
   const handleOnSelectedWord = (selectedWord) => {
     setSelectedEmrWordToAdd(selectedWord);
   };
-  const handleOnToggleWordAddMode = (isEnableWordAddMode) => {
-    setIsShowEmrWordAddForm(isEnableWordAddMode);
-  };
 
   return (
     <>
@@ -216,7 +213,6 @@ const HomePage = () => {
             >
               <EditorWithMarkedWordFeature
                 onSelectedWord={handleOnSelectedWord}
-                onToggleWordAddMode={handleOnToggleWordAddMode}
               />
             </div>
           </div>
@@ -224,8 +220,8 @@ const HomePage = () => {
             className="flex-grow-1 flex-md-grow-0 ml-md-2 mt-3 mt-lg-0 px-3"
             style={{ minHeight: "30vh", minWidth: "25vw" }}
           >
-            {!isShowEmrWordAddForm && <CdmWordList />}
-            {isShowEmrWordAddForm && (
+            {!isEnableWordAddMode && <CdmWordList />}
+            {isEnableWordAddMode && (
               <EmrWordAddForm selectedEmrWord={selectedEmrWordToAdd} />
             )}
           </MDBCard>

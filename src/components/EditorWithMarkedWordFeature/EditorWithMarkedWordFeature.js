@@ -17,6 +17,7 @@ import "quill/dist/quill.core.css";
 import {
   getSimilarWordsSuccess,
   setResetChangeEmrWord,
+  setIsEnableWordAddMode,
 } from "../../actions/wordAction";
 
 Quill.register(
@@ -28,12 +29,8 @@ Quill.register(
 
 const Delta = Quill.import("delta");
 
-const EditorWithMarkedWordFeature = ({
-  onSelectedWord,
-  onToggleWordAddMode,
-}) => {
+const EditorWithMarkedWordFeature = ({ onSelectedWord }) => {
   const GET_SIMILAR_WORDS_TIMEOUT_WHEN_LOAD_OR_PAST_CONTENT = 0; // default is `0` (no timeout)
-  const [isEnableWordAddMode, setIsEnableWordAddMode] = useState(false);
   const [editorHtml, setEditorHtml] = useState("");
   // Quill instance
   const [quillRef, setQuillRef] = useState(null);
@@ -42,7 +39,9 @@ const EditorWithMarkedWordFeature = ({
 
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
-  const changeEmrWord = useSelector((state) => state.word.changeEmrWord);
+  const { changeEmrWord, isEnableWordAddMode } = useSelector(
+    (state) => state.word
+  );
   const resetChangeEmrWord = useSelector(
     (state) => state.word.resetChangeEmrWord
   );
@@ -454,8 +453,8 @@ const EditorWithMarkedWordFeature = ({
 
   /* ----------------------------- Custom Toolbar ----------------------------- */
   const handleSwitchChange = () => {
-    setIsEnableWordAddMode(!isEnableWordAddMode);
-    onToggleWordAddMode(!isEnableWordAddMode);
+    dispatch(setIsEnableWordAddMode(!isEnableWordAddMode));
+    //onToggleWordAddMode(!isEnableWordAddMode);
   };
 
   const CustomToolbar = () => (

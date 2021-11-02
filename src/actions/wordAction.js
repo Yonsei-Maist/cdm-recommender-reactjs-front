@@ -34,6 +34,8 @@ const setPageNumberOfEmrWordList = createAction(
   WORD.SET_PAGE_NUMBER_OF_EMR_WORD_LIST
 );
 
+const setIsEnableWordAddMode = createAction(WORD.SET_IS_ENABLE_WORD_ADD_MODE);
+
 export {
   getSimilarWordsRequest,
   getSimilarWordsSuccess,
@@ -44,4 +46,5 @@ export {
   getEmrCdmRelationshipSuccess,
   getEmrCdmRelationshipError,
   setPageNumberOfEmrWordList,
+  setIsEnableWordAddMode,
 };
