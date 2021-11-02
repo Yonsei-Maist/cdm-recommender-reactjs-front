@@ -35,6 +35,7 @@ const setPageNumberOfEmrWordList = createAction(
 );
 
 const setIsEnableWordAddMode = createAction(WORD.SET_IS_ENABLE_WORD_ADD_MODE);
+const setSelectedEmrWord = createAction(WORD.SET_SELECTED_EMR_WORD);
 
 export {
   getSimilarWordsRequest,
@@ -47,4 +48,5 @@ export {
   getEmrCdmRelationshipError,
   setPageNumberOfEmrWordList,
   setIsEnableWordAddMode,
+  setSelectedEmrWord,
 };

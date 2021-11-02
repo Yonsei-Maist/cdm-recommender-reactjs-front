@@ -20,12 +20,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CdmWordList from "../components/CdmWordList/CdmWordList";
 import LoadDataModal from "../components/LoadDataModal/LoadDataModal";
 import EditorWithMarkedWordFeature from "../components/EditorWithMarkedWordFeature/EditorWithMarkedWordFeature";
+import EmrWordAddForm from "../components/EmrWordAddForm/EmrWordAddForm";
 import {
   getDocListRequest,
   getDocDetailsRequest,
   setSaveDocRequest,
 } from "../actions/docAction";
-import EmrWordAddForm from "../components/EmrWordAddForm/EmrWordAddForm";
 
 /**
  * Renders HomePagelication Component
@@ -52,12 +52,13 @@ import EmrWordAddForm from "../components/EmrWordAddForm/EmrWordAddForm";
 const HomePage = () => {
   const [loadDataModalshow, setLoadDataModalShow] = useState(false);
   const [saveModalShow, setSaveModalShow] = useState(false);
-  const [selectedEmrWordToAdd, setSelectedEmrWordToAdd] = useState("");
   //this hook allows us to access the dispatch function
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
   const saveDoc = useSelector((state) => state.doc.saveDoc);
-  const { isEnableWordAddMode } = useSelector((state) => state.word);
+  const { isEnableWordAddMode, selectedEmrWord } = useSelector(
+    (state) => state.word
+  );
 
   useEffect(() => {
     if (saveDoc.error) {
@@ -141,10 +142,6 @@ const HomePage = () => {
     handleLoadDataModalShow();
   };
 
-  const handleOnSelectedWord = (selectedWord) => {
-    setSelectedEmrWordToAdd(selectedWord);
-  };
-
   return (
     <>
       <MDBContainer className="my-4 d-flex flex-column px-0">
@@ -211,9 +208,7 @@ const HomePage = () => {
                 maxWidth: "fit-content",
               }}
             >
-              <EditorWithMarkedWordFeature
-                onSelectedWord={handleOnSelectedWord}
-              />
+              <EditorWithMarkedWordFeature />
             </div>
           </div>
           <MDBCard
@@ -222,7 +217,7 @@ const HomePage = () => {
           >
             {!isEnableWordAddMode && <CdmWordList />}
             {isEnableWordAddMode && (
-              <EmrWordAddForm selectedEmrWord={selectedEmrWordToAdd} />
+              <EmrWordAddForm selectedEmrWord={selectedEmrWord} />
             )}
           </MDBCard>
         </div>

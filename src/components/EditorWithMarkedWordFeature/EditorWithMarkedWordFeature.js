@@ -18,6 +18,7 @@ import {
   getSimilarWordsSuccess,
   setResetChangeEmrWord,
   setIsEnableWordAddMode,
+  setSelectedEmrWord,
 } from "../../actions/wordAction";
 
 Quill.register(
@@ -29,7 +30,7 @@ Quill.register(
 
 const Delta = Quill.import("delta");
 
-const EditorWithMarkedWordFeature = ({ onSelectedWord }) => {
+const EditorWithMarkedWordFeature = () => {
   const GET_SIMILAR_WORDS_TIMEOUT_WHEN_LOAD_OR_PAST_CONTENT = 0; // default is `0` (no timeout)
   const [editorHtml, setEditorHtml] = useState("");
   // Quill instance
@@ -446,15 +447,16 @@ const EditorWithMarkedWordFeature = ({ onSelectedWord }) => {
       if (selectedWord) {
         console.log(">>>>>>>> selectedWord");
         console.log(selectedWord);
-        onSelectedWord(selectedWord);
+        dispatch(setSelectedEmrWord(selectedWord));
       }
+    } else {
+      dispatch(setSelectedEmrWord(""));
     }
   };
 
   /* ----------------------------- Custom Toolbar ----------------------------- */
   const handleSwitchChange = () => {
     dispatch(setIsEnableWordAddMode(!isEnableWordAddMode));
-    //onToggleWordAddMode(!isEnableWordAddMode);
   };
 
   const CustomToolbar = () => (
