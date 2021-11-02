@@ -24,4 +24,5 @@ yarn-error.log*
 
 #jsdoc
 /.cache
-docs
+docs/*
+!docs/statics
