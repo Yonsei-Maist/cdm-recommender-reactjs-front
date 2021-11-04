@@ -524,7 +524,7 @@ const EditorWithMarkedWordFeature = () => {
             ref={(el) => {
               setReactQuillRef(el);
             }}
-            className={cx(
+            /* className={cx(
               {
                 [css`
                   & p::selection {
@@ -533,6 +533,13 @@ const EditorWithMarkedWordFeature = () => {
                   }
                 `]: !isEnableWordAddMode,
               },
+              css`
+                .ql-container {
+                  font-size: 16px;
+                }
+              `
+            )} */
+            className={cx(
               css`
                 .ql-container {
                   font-size: 16px;
@@ -590,19 +597,24 @@ export const getLookupPhraseOfMaxNWords = (
   cursorEndIndex,
   maxNumberOfWords = 3
 ) => {
-  //let left = text.slice(0, cursorStartIndex).search(/(\s\S+){1, 3}$/) - 1;
-  let regex = new RegExp(`((\s){0,1}(\S+)(\s){0,1}){1,${maxNumberOfWords}}$`);
-  let left = text.slice(0, cursorStartIndex).search(regex) - 1;
-  let right = text.slice(cursorEndIndex).search(/\s/);
-  let startIndex = left;
-  let endIndex = right + cursorEndIndex;
-  let words = text.slice(startIndex, endIndex);
+  let currentTypingWords = null;
+  let regex = new RegExp(`((\\s){0,1}(\\S+)){1,${maxNumberOfWords}}$`);
+  let matches = regex.exec(text.slice(0, cursorStartIndex));
+  if (matches) {
+    let matchText = matches[0];
+    let matchIndex = matches.index;
+    let left = /\s/.test(matchText[0]) ? matchIndex + 1 : matchIndex;
+    let right = text.slice(cursorEndIndex).search(/\s/);
+    let startIndex = left;
+    let endIndex = right + cursorEndIndex;
+    let words = text.slice(startIndex, endIndex);
 
-  let currentTypingWords = {
-    startIndex,
-    endIndex,
-    words,
-  };
+    currentTypingWords = {
+      startIndex,
+      endIndex,
+      words,
+    };
+  }
 
   return currentTypingWords;
 };
