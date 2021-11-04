@@ -439,40 +439,6 @@ const EditorWithMarkedWordFeature = () => {
       console.log("lookupPhrase: ", lookupPhrase);
       triggerOnChange(quillRef, lookupPhrase, isPastText);
     }
-
-    // When user insert or delete text, or past text
-    /* if (isPastText || isUserInput) {
-      const text = quillRef.getText();
-      let cursorStartIndex;
-      let cursorEndIndex;
-      if (isPastText) {
-        cursorStartIndex = delta.ops[0].retain ? delta.ops[0].retain : 0;
-        cursorEndIndex = delta.ops.reduce((accumulator, op) => {
-          if (op.retain) {
-            return (accumulator += op.retain);
-          } else if (op.delete) {
-            return (accumulator -= op.delete);
-          } else {
-            return (accumulator += op.insert.length);
-          }
-        }, 0);
-      } else {
-        cursorStartIndex = quillRef.getSelection().index;
-        cursorEndIndex = cursorStartIndex;
-      }
-
-      // Search for lookup phrase
-      // word found from the left of cursorPosition until
-      // word found from the right of cursorPosition
-      let lookupPhrase = getLookupPhrase(
-        text,
-        cursorStartIndex,
-        cursorEndIndex,
-        isEnterKeyPressed
-      );
-
-      triggerOnChange(quillRef, lookupPhrase, isPastText);
-    } */
   };
 
   const handleOnChangeSelection = (range, source, editor) => {
