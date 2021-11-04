@@ -389,14 +389,59 @@ const EditorWithMarkedWordFeature = () => {
     // when insert or delete letter --> delta.ops.length === 2 && delta.ops[0].retain && (delta.ops[1].insert || delta.ops[1].delete)
     const isUserInput =
       source === Quill.sources.USER &&
+      editor.getSelection() != null &&
       ((delta.ops.length === 1 &&
         (delta.ops[0].insert || delta.ops[0].delete)) ||
         (delta.ops.length === 2 &&
           delta.ops[0].retain &&
           (delta.ops[1].insert || delta.ops[1].delete)));
 
+    // if the insert text is enter character
+    const isEnterKeyPressed =
+      delta.ops.length === 2 &&
+      delta.ops[1].insert &&
+      /\r|\n|\t$/.test(delta.ops[1].insert);
+
+    const text = quillRef.getText();
+    let cursorStartIndex;
+    let cursorEndIndex;
+    let lookupPhrase;
+    // case 01: User pasts text
+    if (isPastText) {
+      cursorStartIndex = delta.ops[0].retain ? delta.ops[0].retain : 0;
+      cursorEndIndex = delta.ops.reduce((accumulator, op) => {
+        if (op.retain) {
+          return (accumulator += op.retain);
+        } else if (op.delete) {
+          return (accumulator -= op.delete);
+        } else {
+          return (accumulator += op.insert.length);
+        }
+      }, 0);
+      lookupPhrase = getLookupPhrase(text, cursorStartIndex, cursorEndIndex);
+    }
+
+    // case 02: User inputs text
+    if (isUserInput) {
+      cursorStartIndex = quillRef.getSelection().index;
+      cursorEndIndex = cursorStartIndex;
+      if (isEnterKeyPressed) {
+        cursorEndIndex += 1;
+      }
+      lookupPhrase = getLookupPhraseOfMaxNWords(
+        text,
+        cursorStartIndex,
+        cursorEndIndex
+      );
+    }
+
+    if (lookupPhrase) {
+      console.log("lookupPhrase: ", lookupPhrase);
+      triggerOnChange(quillRef, lookupPhrase, isPastText);
+    }
+
     // When user insert or delete text, or past text
-    if (isPastText || isUserInput) {
+    /* if (isPastText || isUserInput) {
       const text = quillRef.getText();
       let cursorStartIndex;
       let cursorEndIndex;
@@ -416,12 +461,6 @@ const EditorWithMarkedWordFeature = () => {
         cursorEndIndex = cursorStartIndex;
       }
 
-      // if the insert text is enter character
-      const isEnterKeyPressed =
-        delta.ops.length === 2 &&
-        delta.ops[1].insert &&
-        /\r|\n|\t$/.test(delta.ops[1].insert);
-
       // Search for lookup phrase
       // word found from the left of cursorPosition until
       // word found from the right of cursorPosition
@@ -433,7 +472,7 @@ const EditorWithMarkedWordFeature = () => {
       );
 
       triggerOnChange(quillRef, lookupPhrase, isPastText);
-    }
+    } */
   };
 
   const handleOnChangeSelection = (range, source, editor) => {
@@ -517,15 +556,7 @@ const EditorWithMarkedWordFeature = () => {
 
 export default EditorWithMarkedWordFeature;
 
-export const getLookupPhrase = (
-  text,
-  cursorStartIndex,
-  cursorEndIndex,
-  isEnterKeyPressed = false
-) => {
-  if (isEnterKeyPressed) {
-    cursorEndIndex += 1;
-  }
+export const getLookupPhrase = (text, cursorStartIndex, cursorEndIndex) => {
   let left = text.slice(0, cursorStartIndex).search(/\S+$/);
   let right = text.slice(cursorEndIndex).search(/\s/);
   let startIndex = left;
@@ -543,6 +574,29 @@ export const getLookupPhrase = (
     //endIndex = left+right;
     words = text.slice(startIndex, endIndex);
   }
+
+  let currentTypingWords = {
+    startIndex,
+    endIndex,
+    words,
+  };
+
+  return currentTypingWords;
+};
+
+export const getLookupPhraseOfMaxNWords = (
+  text,
+  cursorStartIndex,
+  cursorEndIndex,
+  maxNumberOfWords = 3
+) => {
+  //let left = text.slice(0, cursorStartIndex).search(/(\s\S+){1, 3}$/) - 1;
+  let regex = new RegExp(`((\s){0,1}(\S+)(\s){0,1}){1,${maxNumberOfWords}}$`);
+  let left = text.slice(0, cursorStartIndex).search(regex) - 1;
+  let right = text.slice(cursorEndIndex).search(/\s/);
+  let startIndex = left;
+  let endIndex = right + cursorEndIndex;
+  let words = text.slice(startIndex, endIndex);
 
   let currentTypingWords = {
     startIndex,

@@ -53,13 +53,13 @@ export const initBaseUrl = (baseApiUrl) => {
 if (process.env && process.env.NODE_ENV !== "production") {
   // logging request interceptor
   AxiosApiInstance.interceptors.request.use((request) => {
-    console.log("Starting Request", JSON.stringify(request, null, 2));
+    //console.log("Starting Request", JSON.stringify(request, null, 2));
     return request;
   });
 
   // logging response interceptor
   AxiosApiInstance.interceptors.response.use((response) => {
-    console.log("Response:", JSON.stringify(response, null, 2));
+    //console.log("Response:", JSON.stringify(response, null, 2));
     return response;
   });
 }
