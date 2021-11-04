@@ -40,7 +40,7 @@ const EditorWithMarkedWordFeature = () => {
 
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
-  const { changeEmrWord, isEnableWordAddMode } = useSelector(
+  const { changeEmrWord, isEnableWordAddMode, selectedEmrWord } = useSelector(
     (state) => state.word
   );
   const resetChangeEmrWord = useSelector(
@@ -179,6 +179,32 @@ const EditorWithMarkedWordFeature = () => {
     }
     setQuillRef(reactQuillRef.getEditor());
   }, [reactQuillRef]);
+
+  // useEffect on selectedEmrWord
+  useEffect(() => {
+    if (selectedEmrWord) {
+      const text = quillRef.getText();
+      let regex = new RegExp(selectedEmrWord, "gi");
+      let matches = text.matchAll(regex);
+      let listOfMatchedSelectedEmrWord = [];
+      if (matches) {
+        for (const match of matches) {
+          console.log(match);
+          console.log(match[0].length);
+          listOfMatchedSelectedEmrWord.push({
+            startIndex: match.index,
+            endIndex: match.index + match[0].length,
+            match,
+          });
+        }
+        console.log(
+          "listOfMatchedSelectedEmrWord",
+          listOfMatchedSelectedEmrWord
+        );
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEmrWord]);
 
   // when load data, we get the saved content from redux.
   // Built delta by content for display the content in the editor
