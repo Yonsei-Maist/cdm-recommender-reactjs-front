@@ -216,9 +216,7 @@ const HomePage = () => {
             style={{ minHeight: "30vh", minWidth: "25vw" }}
           >
             {!isEnableWordAddMode && <CdmWordList />}
-            {isEnableWordAddMode && (
-              <EmrWordAddForm selectedEmrWord={selectedEmrWord} />
-            )}
+            {isEnableWordAddMode && <EmrWordAddForm />}
           </MDBCard>
         </div>
       </MDBContainer>

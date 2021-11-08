@@ -60,3 +60,8 @@ export const API_URL_GET_EMR_CDM_RELATIONSHIP = "cdm/words/list";
  * @type {string=} handleOnClickMarkedWord
  */
 export const METHOD_NAME_ONCLICK_MARKED_WORD = "handleOnClickMarkedWord";
+
+/* --------------------------- MakerdWord constant -------------------------- */
+export const BACKGROUD_COLOR_HIGHLIGHT = "#007bff";
+export const BACKGROUD_COLOR_EMR_WORD = "#fb3";
+export const BACKGROUD_COLOR_CDM_WORD = "darkgreen";

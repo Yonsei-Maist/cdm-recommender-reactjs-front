@@ -29,7 +29,7 @@ const defaultState = {
   emrCdmRelationship: {},
   pageNumberOfEmrWordList: 1,
   isEnableWordAddMode: false,
-  selectedEmrWord: "",
+  selectedEmrWord: null,
 };
 
 const wordReducer = handleActions(

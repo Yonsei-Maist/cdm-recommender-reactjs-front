@@ -5,13 +5,19 @@
  */
 import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from "react-quill";
-import { MarkedWord } from "../../formats/markedWord";
+import { MarkedWord } from "../../formats/MarkedWord";
+import { SelectedWord } from "../../formats/SelectedWord";
 import WordService from "../../api/WordService";
 import { useDispatch, useSelector } from "react-redux";
 import { setContent } from "../../actions/contentAction";
 import _ from "lodash";
 import { ClassNames } from "@emotion/react";
 import EnabledWordAddModeNotification from "../EnabledWordAddModeNotification/EnabledWordAddModeNotification";
+import {
+  BACKGROUD_COLOR_HIGHLIGHT,
+  BACKGROUD_COLOR_EMR_WORD,
+  BACKGROUD_COLOR_CDM_WORD,
+} from "../../constants";
 
 import "quill/dist/quill.core.css";
 import {
@@ -24,6 +30,7 @@ import {
 Quill.register(
   {
     "formats/markedWord": MarkedWord,
+    "formats/selectedWord": SelectedWord,
   },
   true
 );
@@ -37,6 +44,9 @@ const EditorWithMarkedWordFeature = () => {
   const [quillRef, setQuillRef] = useState(null);
   // ReactQuill component
   const [reactQuillRef, setReactQuillRef] = useState(null);
+  // List of matched selected EMR word
+  const [listOfMatchedSelectedEmrWord, setListOfMatchedSelectedEmrWord] =
+    useState([]);
 
   const dispatch = useDispatch();
   const content = useSelector((state) => state.content);
@@ -182,29 +192,99 @@ const EditorWithMarkedWordFeature = () => {
 
   // useEffect on selectedEmrWord
   useEffect(() => {
+    if (quillRef === null) {
+      return;
+    }
+
+    // reset highlight selected emr word
+    if (
+      listOfMatchedSelectedEmrWord &&
+      listOfMatchedSelectedEmrWord.length !== 0
+    ) {
+      resetHighlightSelectedEmrWord(quillRef, listOfMatchedSelectedEmrWord);
+    }
+
+    console.log("useEffect on selectedEmrWord", selectedEmrWord);
+    let newListOfMatchedSelectedEmrWord = [];
     if (selectedEmrWord) {
       const text = quillRef.getText();
-      let regex = new RegExp(selectedEmrWord, "gi");
+      let regex = new RegExp(`${selectedEmrWord.words}\\b`, "gi");
       let matches = text.matchAll(regex);
-      let listOfMatchedSelectedEmrWord = [];
       if (matches) {
         for (const match of matches) {
-          console.log(match);
-          console.log(match[0].length);
-          listOfMatchedSelectedEmrWord.push({
+          newListOfMatchedSelectedEmrWord.push({
             startIndex: match.index,
             endIndex: match.index + match[0].length,
-            match,
+            words: match[0],
           });
         }
-        console.log(
-          "listOfMatchedSelectedEmrWord",
-          listOfMatchedSelectedEmrWord
+      }
+    }
+    setListOfMatchedSelectedEmrWord(newListOfMatchedSelectedEmrWord);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEmrWord]);
+
+  // useEffect on listOfMatchedSelectedEmrWord
+  useEffect(() => {
+    console.log(
+      "useEffect listOfMatchedSelectedEmrWord",
+      listOfMatchedSelectedEmrWord
+    );
+    if (quillRef === null) {
+      return;
+    }
+
+    if (
+      listOfMatchedSelectedEmrWord &&
+      listOfMatchedSelectedEmrWord.length !== 0
+    ) {
+      const newDelta = new Delta();
+      let offsetRetainIndex = 0;
+      // highlight selected EMR words
+      listOfMatchedSelectedEmrWord.forEach((matchedSelectedEmrWord) => {
+        let { startIndex, words } = matchedSelectedEmrWord;
+        let retainIndex = startIndex;
+        let deleteLength = words.length;
+        newDelta
+          .retain(retainIndex - offsetRetainIndex)
+          .delete(deleteLength)
+          .insert(words, {
+            selectedWord: { backgroundColor: BACKGROUD_COLOR_HIGHLIGHT },
+          });
+        offsetRetainIndex = startIndex + deleteLength;
+      });
+      //quillRef.updateContents(newDelta, Quill.sources.API);
+      quillRef.updateContents(newDelta, Quill.sources.API);
+      if (selectedEmrWord) {
+        let cursorPosition = selectedEmrWord.startIndex; // quillRef.getText().length;
+        quillRef.setSelection(
+          cursorPosition,
+          selectedEmrWord.words.length,
+          Quill.sources.API
         );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEmrWord]);
+  }, [listOfMatchedSelectedEmrWord]);
+
+  // useEffect on isEnableWordAddMode
+  useEffect(() => {
+    if (!isEnableWordAddMode) {
+      dispatch(setSelectedEmrWord(""));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEnableWordAddMode]);
+
+  const resetHighlightSelectedEmrWord = (
+    quillRef,
+    listOfMatchedSelectedEmrWord
+  ) => {
+    listOfMatchedSelectedEmrWord.forEach((matchedSelectedEmrWord) => {
+      let { startIndex, words } = matchedSelectedEmrWord;
+      // remove format from lookup phrase
+      quillRef.removeFormat(startIndex, words.length);
+    });
+  };
 
   // when load data, we get the saved content from redux.
   // Built delta by content for display the content in the editor
@@ -354,7 +434,9 @@ const EditorWithMarkedWordFeature = () => {
       if (lookupWordsObj.emrWordId) {
         newDelta.insert(lookupWordsObj.lookupWord, {
           markedWord: {
-            color: !!lookupWordsObj.boolIsChanged ? "darkgreen" : "#fb3",
+            backgroundColor: !!lookupWordsObj.boolIsChanged
+              ? BACKGROUD_COLOR_CDM_WORD
+              : BACKGROUD_COLOR_EMR_WORD,
             strText: lookupWordsObj.lookupWord,
             emrWordId: lookupWordsObj.emrWordId,
             emrWordStrText: lookupWordsObj.emrWordStrText,
@@ -468,20 +550,24 @@ const EditorWithMarkedWordFeature = () => {
   };
 
   const handleOnChangeSelection = (range, source, editor) => {
-    if (source === Quill.sources.USER && range != null && range.length !== 0) {
-      const text = editor.getText();
-      const cursorStartIndex = range.index;
-      const cursorEndIndex = range.index + range.length;
-      let selectedWord = text
-        .substring(cursorStartIndex, cursorEndIndex)
-        .trim();
-      if (selectedWord) {
-        console.log(">>>>>>>> selectedWord");
-        console.log(selectedWord);
-        dispatch(setSelectedEmrWord(selectedWord));
+    console.log("handleOnChangeSelection");
+    if (source === Quill.sources.USER) {
+      console.log("range", range);
+      if (range) {
+        if (range.length !== 0) {
+          const text = editor.getText();
+          const cursorStartIndex = range.index;
+          const cursorEndIndex = range.index + range.length;
+          let selectedWord = {
+            startIndex: cursorStartIndex,
+            endIndex: cursorEndIndex,
+            words: text.substring(cursorStartIndex, cursorEndIndex),
+          };
+          dispatch(setSelectedEmrWord(selectedWord));
+        } else {
+          dispatch(setSelectedEmrWord(""));
+        }
       }
-    } else {
-      dispatch(setSelectedEmrWord(""));
     }
   };
 
@@ -543,7 +629,6 @@ const EditorWithMarkedWordFeature = () => {
             onChangeSelection={
               isEnableWordAddMode ? handleOnChangeSelection : undefined
             }
-            onBlur={undefined}
             theme={null}
           />
         )}

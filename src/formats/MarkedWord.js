@@ -14,7 +14,8 @@ export class MarkedWord extends Inline {
   static create(value) {
     const id = v4();
     const {
-      color,
+      backgroundColor,
+      color = "white",
       strText,
       emrWordId,
       emrWordStrText,
@@ -24,11 +25,18 @@ export class MarkedWord extends Inline {
     } = value;
     let node = super.create(value);
     node.setAttribute("data-id", id);
-    node.style.backgroundColor = color;
-    node.style.color = "white";
+    // Styles
+    node.style.backgroundColor = backgroundColor;
+    node.style.color = color;
     node.style.padding = "0.1em";
     node.style.cursor = "pointer";
+    node.style.userSelect = "none";
+    if (node.parentNode && node.parentNode.tagName.toLowerCase() === "span") {
+      node.parentNode.style.userSelect = "none";
+    }
+    // Data set
     node.dataset.id = id;
+    node.dataset.name = "MarkedWord";
     node.dataset.color = color;
     node.dataset.strText = strText;
     node.dataset.emrWordId = emrWordId;
@@ -52,7 +60,7 @@ export class MarkedWord extends Inline {
         global[METHOD_NAME_ONCLICK_MARKED_WORD](markedWord, quillRef);
         ev.preventDefault();
       },
-      false
+      true
     );
 
     return node;
@@ -65,19 +73,19 @@ export class MarkedWord extends Inline {
    * @param {*} node
    */
   static formats(node) {
-    if (!node.style.backgroundColor) return null;
+    if (node.dataset.name === "MarkedWord") {
+      const markedWord = {
+        id: node.dataset.id,
+        color: node.dataset.color,
+        strText: node.dataset.strText,
+        emrWordId: node.dataset.emrWordId,
+        emrWordStrText: node.dataset.emrWordStrText,
+        boolIsChanged: node.dataset.boolIsChanged === "false" ? false : true,
+        cdmWordId: node.dataset.cdmWordId,
+      };
 
-    const markedWord = {
-      id: node.dataset.id,
-      color: node.dataset.color,
-      strText: node.dataset.strText,
-      emrWordId: node.dataset.emrWordId,
-      emrWordStrText: node.dataset.emrWordStrText,
-      boolIsChanged: node.dataset.boolIsChanged === "false" ? false : true,
-      cdmWordId: node.dataset.cdmWordId,
-    };
-
-    return markedWord;
+      return markedWord;
+    }
   }
 }
 

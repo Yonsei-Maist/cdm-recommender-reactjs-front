@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MDBInput, MDBBtn } from "mdbreact";
 import Select from "react-select";
+import { useSelector } from "react-redux";
 
-const EmrWordAddForm = ({ selectedEmrWord }) => {
-  const [emrWord, setEmrWord] = useState();
+const EmrWordAddForm = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isEnableAddButton, setIsEnableAddButton] = useState(false);
+  const { selectedEmrWord } = useSelector((state) => state.word);
 
   useEffect(() => {
-    setEmrWord(selectedEmrWord);
-  }, [selectedEmrWord]);
-
-  useEffect(() => {
-    setIsEnableAddButton(emrWord && selectedOption);
-  }, [emrWord, selectedOption]);
+    setIsEnableAddButton(
+      selectedEmrWord && selectedEmrWord.words && selectedOption
+    );
+  }, [selectedEmrWord, selectedOption]);
 
   const options = [
     { label: "cold", value: "cdmId 01" },
@@ -28,7 +27,7 @@ const EmrWordAddForm = ({ selectedEmrWord }) => {
   };
 
   const handleOnClickButtonAdd = () => {
-    console.log(emrWord, selectedOption);
+    console.log(selectedEmrWord.words, selectedOption);
   };
 
   return (
@@ -43,13 +42,16 @@ const EmrWordAddForm = ({ selectedEmrWord }) => {
         }}
       />
       <form>
-        <div className="grey-text">
+        <div
+          className="grey-text"
+          title="Select EMR words to add from text editor."
+        >
           <MDBInput
             label="EMR Word"
             outline
             type="text"
-            disabled={true}
-            value={emrWord}
+            disabled
+            value={(selectedEmrWord && selectedEmrWord.words) || ""}
           />
           <Select
             value={selectedOption}
