@@ -95,7 +95,7 @@ npm start
 
 
 ## Author
-Vicheka Phor, Yonsei Univ. Researcher, since 2020.10 ~
+Vicheka Phor, Yonsei Univ. Researcher, since 2020.10 ~  
 Sangwon Hwang, Yonsei Univ. Research Professor, since 2018.09 ~
 
 
